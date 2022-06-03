@@ -80,7 +80,7 @@ balls.append({
 running = True
 while running:
     
-    dt = clock.tick(60) # 게임 화면 초당 프레임 수
+    dt = clock.tick(30) # 게임 화면 초당 프레임 수
     # 2. 이벤트 처리 (키보드, 마우스 등)
     for event in pygame.event.get():  # 어떤 이벤트 발생하였는지
         if event.type == pygame.QUIT:
@@ -118,7 +118,25 @@ while running:
     # 공 위치 정의
     for ball_idx, ball_val in enumerate(balls):
         ball_pos_x = ball_val["pos_x"]
+        ball_pos_y = ball_val["pos_y"]
+        ball_img_idx = ball_val["img_idx"]
 
+        ball_size = ball_images[ball_img_idx].get_rect().size
+        ball_width = ball_size[0]
+        ball_height = ball_size[1]
+
+        # 벽에 닿았을 때 진행방향 바꾸기
+        if ball_pos_x < 0 or ball_pos_x > screen_width - ball_width:
+            ball_val["to_x"] = ball_val["to_x"] * -1
+
+        # 스테이지에 튕겨서 올라가는 처리
+        if ball_pos_y >= screen_height - stage_height - ball_height:
+            ball_val["to_y"] = ball_val["init_spd_y"]
+        else : # 그 외의 모든 경우에는 속도를 줄임
+            ball_val["to_y"] += 0.5
+
+        ball_val["pos_x"] += ball_val["to_x"]
+        ball_val["pos_y"] += ball_val["to_y"]
     # 4. 충돌 처리
 
     # 5. 화면 그리기
@@ -126,6 +144,12 @@ while running:
     
     for weapon_x_pos, weapon_y_pos in weapons:
         screen.blit(weapon, (weapon_x_pos, weapon_y_pos))
+    for idx, val in enumerate(balls):
+        ball_pos_x = val["pos_x"]
+        ball_pos_y = val["pos_y"]
+        ball_img_idx = val["img_idx"]
+        screen.blit(ball_images[ball_img_idx], (ball_pos_x, ball_pos_y))
+
     screen.blit(stage, (0, screen_height - stage_height))    
     screen.blit(character, (character_x_pos, character_y_pos))
     
