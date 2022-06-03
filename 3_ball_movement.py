@@ -149,7 +149,7 @@ while running:
         ball_pos_y = val["pos_y"]
         ball_img_idx = val["img_idx"]
         screen.blit(ball_images[ball_img_idx], (ball_pos_x, ball_pos_y))
-
+    print(ball_pos_x, ball_pos_y)
     screen.blit(stage, (0, screen_height - stage_height))    
     screen.blit(character, (character_x_pos, character_y_pos))
     
